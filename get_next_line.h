@@ -1,2 +1,2 @@
 int get_next_line(int const fd, char **line);
-#define BUF_SIZE 1
+#define BUFF_SIZE 10
