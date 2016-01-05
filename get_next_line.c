@@ -13,32 +13,16 @@ int lineorend(char *chaine)
   int i;
 
   i = 0;
-  result = 0;
-  while(chaine[i] && result == 0)
+  result = 4;
+  while(chaine[i] && result == 4)
     {
-      if(chaine[i] == '\n' || chaine[i] == '\0')
+      
+      if(chaine[i] == '\n')
 	result = 1;
       i++;
     }
-  return (result);
-}
-
-
-int lineorend2(char *chaine)
-{
-  int result;
-  int i;
-
-  i = 0;
-  result = 0;
-  while(chaine[i] && result == 0)
-    {
-      if(chaine[i] == '\n')
-        result = 1;
-      else if(chaine[i] == '\0')
-	result = 2;
-      i++;
-    }
+  if(!chaine[i] && result == 4)
+    result = 0;
   return (result);
 }
 
@@ -56,41 +40,51 @@ int amalloc(char *chaine)
 
 int get_next_line(int const fd, char **line)
 {
-  int thereturn;
+  static  int thereturn;
   int ret;
   char buf[BUFF_SIZE + 1];
   static char *chaine;
   int mall;
   int i;
+  char *chaine2;
+  int i2;
+  int i3;
 
-  thereturn = 1;
+  i3 = 0;
+  i2 = 0;
+  mall = 0;
+  thereturn = 4;//VARIABLE MODIFFERKWKFKWKFKKWFKEKWKEWFWFKFEWKFKFEWKFEWKFWKEWKEFKF
   i = 0;
   if (!chaine)
     chaine = ft_strnew(BUFF_SIZE + 1);
-  
-  while(lineorend(chaine) != 1)
-    { 
-      ret = read(fd, buf, BUFF_SIZE);
-      printf(" %d ",ret);
-      chaine = ft_strjoin(chaine,buf);
+    while(thereturn == 4)
+    {
+      if((ret = read(fd, buf, BUFF_SIZE)))
+	{
+	  chaine = ft_strjoin(chaine,buf);
+	}
+      if(ret == -1)
+        return (-1);
+      else if(lineorend(chaine) == 1)
+        thereturn = 1;
+      else if(lineorend(chaine) == 0 && ret == 0)
+	thereturn = 0;
     }
   mall = amalloc(chaine);
-  line = (char **)malloc(sizeof(char *) * 2);
-  line[0] = (char *)malloc(sizeof(char) * mall + 1);
+  line[0] = ft_strnew(mall + 1);
   while(i < mall)
     {
       line[0][i] = chaine[i];
       i++;
     }
-  printf("\n\nma ligne : %s",line[0]);
+  printf("\nma ligne : %s\n",line[0]);
   i = 0;
-  while(i < mall)
-    {
-      chaine[i] = ' ';
-      i++;
-    }
-  chaine = ft_strtrim(chaine);
-  return (ret);
+  while(chaine[i] != '\n' && chaine[i] != '\0')
+    i++;
+  i++;  
+  chaine = ft_strsub(chaine,i,ft_strlen(chaine));
+  printf("return : %d",thereturn);
+  return (thereturn);
 }
 
 int main (int argc, char **argv)
@@ -101,9 +95,11 @@ int main (int argc, char **argv)
     if (argc != 2)
       return (0);
     fd = open(argv[1], O_RDONLY);    
-    printf(" return : %d",get_next_line(fd, &line)); 
+    /*     printf(" return : %d",get_next_line(fd, &line)); 
     free(line); 
-    /*   printf(" return : %d",get_next_line(fd, &line));
+    printf(" return : %d",get_next_line(fd, &line));
+   free(line);
+   printf(" return : %d",get_next_line(fd, &line));
    free(line);
    printf(" return : %d",get_next_line(fd, &line));
    free(line);
@@ -111,5 +107,9 @@ int main (int argc, char **argv)
    free(line);
    printf(" return : %d",get_next_line(fd, &line));
    free(line);*/
+      while(get_next_line(fd, &line))
+      {
+	free(line);
+       }
     return (0);
 }
