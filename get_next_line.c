@@ -49,15 +49,6 @@ int		amalloc(char *chaine)
 	return (i);
 }
 
-int tr(char *chaine)
-{
-  int i;
-
-  i = 0;
-  while(chaine[i] != '\0' && chaine[i] != EOF && (chaine[i] >= 33 && chaine[i] <= 126))
-    i++;
-  return (i);
-}
 int give_thereturn(char *chaine, int ret)
 {
   int thereturn;
@@ -84,10 +75,14 @@ int		get_next_line(int const fd , char **line)
 	mall = 0;
 	thereturn = 4;
 	i = 0;
-	if (fd <= 0 || line == NULL)
+	if (fd < 0 || line == NULL)
 		return (-1);
 	if(!chaine)
+	  {
 	  chaine = (char **)malloc(sizeof(char *) * 100);
+	  if(!chaine)
+	    return (-1);
+	  }
 	if (!chaine[fd])
 	  chaine[fd] = ft_strnew(BUFF_SIZE + 1);
 	ft_bzero(chaine[fd],'\0');
