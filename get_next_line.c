@@ -26,12 +26,14 @@ int		lineorend(char *chaine)
 
 	i = 0;
 	result = 4;
-	while (chaine[i] && result == 4)
+	while (chaine[i] && result == 4 && chaine[i] != EOF)
 	{
 		if (chaine[i] == '\n')
 			result = 1;
 		i++;
 	}
+	if(chaine[i] == EOF && result == 4)
+	  result = 0;
 	if (!chaine[i] && result == 4)
 		result = 0;
 	return (result);
@@ -42,11 +44,20 @@ int		amalloc(char *chaine)
 	int i;
 
 	i = 0;
-	while (chaine[i] != '\n' && chaine[i] != '\0')
-		i++;
+	while (chaine[i] != '\n' && chaine[i] != '\0' && chaine[i] != EOF)
+	  i++;
 	return (i);
 }
 
+int tr(char *chaine)
+{
+  int i;
+
+  i = 0;
+  while(chaine[i] != '\0' && chaine[i] != EOF && (chaine[i] >= 33 && chaine[i] <= 126))
+    i++;
+  return (i);
+}
 int give_thereturn(char *chaine, int ret)
 {
   int thereturn;
@@ -76,36 +87,34 @@ int		get_next_line(int const fd, char **line)
 	if (fd <= 0 || line == NULL)
 		return (-1);
 	if (!chaine)
-		chaine = ft_strnew(BUFF_SIZE + 1);
+	  chaine = ft_strnew(BUFF_SIZE + 1);
+	ft_bzero(chaine,'\0');
 	while (thereturn == 4)
 	{
-		if ((ret = read(fd, buf, BUFF_SIZE)))
-		{
-			buf[BUFF_SIZE] = '\0';
-			chaine = ft_strjoin(chaine,buf);
-		}
-		thereturn = give_thereturn(chaine, ret);
+	  if ((ret = read(fd, buf, BUFF_SIZE)))
+	    {
+	      buf[ret] = '\0';	
+	      chaine = ft_strjoin(chaine,buf);
+	    }
+	  thereturn = give_thereturn(chaine, ret);
 	}
-	if(thereturn != -1)
+	mall = amalloc(chaine);
+	line[0] = ft_strnew(mall + 1);
+	while (i < mall)
 	  {
-	    mall = amalloc(chaine);
-	    line[0] = ft_strnew(mall + 1);
-	    while (i < mall)
-	      {
-		line[0][i] = chaine[i];
-		i++;
-	      }
-	    line[0][i] = '\0';
-	    i = 0;
-	    while (chaine[i] != '\n' && chaine[i] != '\0')
-	      i++;
-	    i++;  
-	    chaine = ft_strsub(chaine,i,ft_strlen(chaine));
+	    line[0][i] = chaine[i];
+	    i++;
 	  }
+	line[0][i] = '\0';
+	i = 0;
+	while (chaine[i] != '\n' && chaine[i] != '\0')
+	  i++;
+	i++;  
+	chaine = ft_strsub(chaine,i,ft_strlen(chaine));
 	return (thereturn);
 }
-
-   int main (int argc, char **argv)
+/*
+ int main (int argc, char **argv)
    {
    int	     fd;
    char *line;
@@ -122,3 +131,4 @@ int		get_next_line(int const fd, char **line)
    return (0);
    }
 
+*/
