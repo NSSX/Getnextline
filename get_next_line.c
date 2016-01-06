@@ -46,14 +46,9 @@ int get_next_line(int const fd, char **line)
   static char *chaine;
   int mall;
   int i;
-  char *chaine2;
-  int i2;
-  int i3;
-
-  i3 = 0;
-  i2 = 0;
+ 
   mall = 0;
-  thereturn = 4;//VARIABLE MODIFFERKWKFKWKFKKWFKEKWKEWFWFKFEWKFKFEWKFEWKFWKEWKEFKF
+  thereturn = 4;
   i = 0;
   if (!chaine)
     chaine = ft_strnew(BUFF_SIZE + 1);
@@ -61,6 +56,7 @@ int get_next_line(int const fd, char **line)
     {
       if((ret = read(fd, buf, BUFF_SIZE)))
 	{
+	  buf[BUFF_SIZE] = '\0';
 	  chaine = ft_strjoin(chaine,buf);
 	}
       if(ret == -1)
@@ -70,23 +66,23 @@ int get_next_line(int const fd, char **line)
       else if(lineorend(chaine) == 0 && ret == 0)
 	thereturn = 0;
     }
-  mall = amalloc(chaine);
-  line[0] = ft_strnew(mall + 1);
-  while(i < mall)
-    {
-      line[0][i] = chaine[i];
+    mall = amalloc(chaine);
+    line[0] = ft_strnew(mall + 1);
+    while(i < mall)
+      {
+	
+	line[0][i] = chaine[i];
+	i++;
+      }
+    line[0][i] = '\0';
+    i = 0;
+    while(chaine[i] != '\n' && chaine[i] != '\0')
       i++;
-    }
-  printf("\nma ligne : %s\n",line[0]);
-  i = 0;
-  while(chaine[i] != '\n' && chaine[i] != '\0')
-    i++;
-  i++;  
-  chaine = ft_strsub(chaine,i,ft_strlen(chaine));
-  printf("return : %d",thereturn);
-  return (thereturn);
+    i++;  
+    chaine = ft_strsub(chaine,i,ft_strlen(chaine));
+    return (thereturn);
 }
-
+/*
 int main (int argc, char **argv)
 {
     int	     fd;
@@ -95,21 +91,11 @@ int main (int argc, char **argv)
     if (argc != 2)
       return (0);
     fd = open(argv[1], O_RDONLY);    
-    /*     printf(" return : %d",get_next_line(fd, &line)); 
-    free(line); 
-    printf(" return : %d",get_next_line(fd, &line));
-   free(line);
-   printf(" return : %d",get_next_line(fd, &line));
-   free(line);
-   printf(" return : %d",get_next_line(fd, &line));
-   free(line);
-   printf(" return : %d",get_next_line(fd, &line));
-   free(line);
-   printf(" return : %d",get_next_line(fd, &line));
-   free(line);*/
       while(get_next_line(fd, &line))
       {
+	printf("\nma ligne : %s\n",line);
 	free(line);
        }
+      printf("\nma ligne : %s\n",line);
     return (0);
-}
+    }*/
