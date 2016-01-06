@@ -72,12 +72,12 @@ int give_thereturn(char *chaine, int ret)
   return (thereturn);
 }
 
-int		get_next_line(int const fd, char **line)
+int		get_next_line(int const fd , char **line)
 {
 	int thereturn;
 	int		ret;
 	char	buf[BUFF_SIZE + 1];
-	static	char *chaine;
+	static	char **chaine;
 	int		mall;
 	int		i;
 
@@ -86,31 +86,33 @@ int		get_next_line(int const fd, char **line)
 	i = 0;
 	if (fd <= 0 || line == NULL)
 		return (-1);
-	if (!chaine)
-	  chaine = ft_strnew(BUFF_SIZE + 1);
-	ft_bzero(chaine,'\0');
+	if(!chaine)
+	  chaine = (char **)malloc(sizeof(char *) * 100);
+	if (!chaine[fd])
+	  chaine[fd] = ft_strnew(BUFF_SIZE + 1);
+	ft_bzero(chaine[fd],'\0');
 	while (thereturn == 4)
 	{
 	  if ((ret = read(fd, buf, BUFF_SIZE)))
 	    {
 	      buf[ret] = '\0';	
-	      chaine = ft_strjoin(chaine,buf);
+	      chaine[fd] = ft_strjoin(chaine[fd],buf);
 	    }
-	  thereturn = give_thereturn(chaine, ret);
+	  thereturn = give_thereturn(chaine[fd], ret);
 	}
-	mall = amalloc(chaine);
+	mall = amalloc(chaine[fd]);
 	line[0] = ft_strnew(mall + 1);
 	while (i < mall)
 	  {
-	    line[0][i] = chaine[i];
+	    line[0][i] = chaine[fd][i];
 	    i++;
 	  }
 	line[0][i] = '\0';
 	i = 0;
-	while (chaine[i] != '\n' && chaine[i] != '\0')
+	while (chaine[fd][i] != '\n' && chaine[fd][i] != '\0')
 	  i++;
 	i++;  
-	chaine = ft_strsub(chaine,i,ft_strlen(chaine));
+	chaine[fd] = ft_strsub(chaine[fd],i,ft_strlen(chaine[fd]));
 	return (thereturn);
 }
 /*
@@ -130,5 +132,4 @@ int		get_next_line(int const fd, char **line)
    printf("\nma ligne : %s\n",line);
    return (0);
    }
-
 */
