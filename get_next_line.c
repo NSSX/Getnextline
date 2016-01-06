@@ -50,6 +50,8 @@ int get_next_line(int const fd, char **line)
   mall = 0;
   thereturn = 4;
   i = 0;
+      if(fd <= 0 || line == NULL)
+        return (-1);
   if (!chaine)
     chaine = ft_strnew(BUFF_SIZE + 1);
     while(thereturn == 4)
@@ -60,7 +62,7 @@ int get_next_line(int const fd, char **line)
 	  chaine = ft_strjoin(chaine,buf);
 	}
       if(ret == -1)
-        return (-1);
+	return (-1);
       else if(lineorend(chaine) == 1)
         thereturn = 1;
       else if(lineorend(chaine) == 0 && ret == 0)
